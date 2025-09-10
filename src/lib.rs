@@ -214,24 +214,27 @@ where
     *cost_matrix.get_mut(0, 0).unwrap() = dist(x[0], y[0]).into();
 
     // Fill first matrix column to eliminate further checks in loop
+    #[allow(clippy::needless_range_loop)]
     for row in 1..y.len() {
-        if let Some(&bottom) = cost_matrix.get(0, row - 1) {
-            if let Some(elem) = cost_matrix.get_mut(0, row) {
-                *elem = T::Container::from(dist(x[0], y[row])) + bottom;
-            }
+        if let Some(&bottom) = cost_matrix.get(0, row - 1)
+            && let Some(elem) = cost_matrix.get_mut(0, row)
+        {
+            *elem = T::Container::from(dist(x[0], y[row])) + bottom;
         }
     }
 
     // Fill first matrix row to eliminate further checks in loop
+    #[allow(clippy::needless_range_loop)]
     for col in 1..x.len() {
-        if let Some(&left) = cost_matrix.get(col - 1, 0) {
-            if let Some(elem) = cost_matrix.get_mut(col, 0) {
-                *elem = T::Container::from(dist(x[col], y[0])) + left;
-            }
+        if let Some(&left) = cost_matrix.get(col - 1, 0)
+            && let Some(elem) = cost_matrix.get_mut(col, 0)
+        {
+            *elem = T::Container::from(dist(x[col], y[0])) + left;
         }
     }
 
     // Fill matrix row by row
+    #[allow(clippy::needless_range_loop)]
     for row in 1..y.len() {
         for col in cost_matrix.partial_row_range(row).skip(1) {
             let left = *cost_matrix
@@ -331,12 +334,12 @@ where
 
         let mut size = 0;
         let mut partial_rows = Vec::with_capacity(row_constraints.len());
-        for i in 0..row_constraints.len() {
-            assert!(row_constraints[i].start_col <= row_constraints[i].end_col);
-            let range_size = row_constraints[i].end_col - row_constraints[i].start_col + 1;
+        for row_constraint in row_constraints {
+            assert!(row_constraint.start_col <= row_constraint.end_col);
+            let range_size = row_constraint.end_col - row_constraint.start_col + 1;
 
             partial_rows.push(PartialRow {
-                start_col: row_constraints[i].start_col,
+                start_col: row_constraint.start_col,
                 start_buf_idx: size,
                 len: range_size,
             });
