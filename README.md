@@ -1,5 +1,5 @@
 # dtw
-Implementation of dynamic time warping (DTW) algorithm and approximations.
+Dynamic time warping (DTW) algorithm and approximations implementation.
 
 The DTW algorithm [1] finds the optimal alignment between two time series.
 
